@@ -1,0 +1,50 @@
+MariaDB [(none)]> create database stude;
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [(none)]> use stude;
+Database changed
+
+MariaDB [stude]> create table records(sid int auto_increment primary key,sname varchar(10),cls char,address varchar(6),grades char,enrol_date date,sub_name varchar(3),attendance int);
+Query OK, 0 rows affected (0.017 sec)
+
+MariaDB [stude]> insert into records values
+    -> (1,'tejashri','a','pune','a','2023-02-04','dbms',98),
+    -> (2,'sahit_dsa','b','USA','b','2022-12-14','dsa',89);
+Query OK, 2 rows affected, 1 warning (0.006 sec)
+Records: 2  Duplicates: 0  Warnings: 1
+
+MariaDB [stude]> select * from records;
++-----+-----------+------+---------+--------+------------+----------+------------+
+| sid | sname     | cls  | address | grades | enrol_date | sub_name | attendance |
++-----+-----------+------+---------+--------+------------+----------+------------+
+|   1 | tejashri  | a    | pune    | a      | 2023-02-04 | dbm      |         98 |
+|   2 | sahit_dsa | b    | USA     | b      | 2022-12-14 | dsa      |         89 |
++-----+-----------+------+---------+--------+------------+----------+------------+
+2 rows in set (0.000 sec)
+
+MariaDB [stude]> create view v1 as select sid,sname,grades,sub_name,attendance from records;
+Query OK, 0 rows affected (0.006 sec)
+
+MariaDB [stude]> select * from v1;
++-----+-----------+--------+----------+------------+
+| sid | sname     | grades | sub_name | attendance |
++-----+-----------+--------+----------+------------+
+|   1 | tejashri  | a      | dbm      |         98 |
+|   2 | sahit_dsa | b      | dsa      |         89 |
++-----+-----------+--------+----------+------------+
+2 rows in set (0.002 sec)
+
+MariaDB [stude]> create index n1 on records(sname);
+Query OK, 0 rows affected (0.020 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [stude]> show index from records;
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table   | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| records |          0 | PRIMARY  |            1 | sid         | A         |           2 |     NULL | NULL   |      | BTREE      |         |               |
+| records |          1 | n1       |            1 | sname       | A         |           2 |     NULL | NULL   | YES  | BTREE      |         |               |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+2 rows in set (0.001 sec)
+
+
