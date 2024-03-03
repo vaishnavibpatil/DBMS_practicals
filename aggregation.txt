@@ -1,0 +1,154 @@
+four> use five;
+switched to db five
+
+five> db.book.insertMany([{title : 'habits',author : 'clay',genre: 'fict',price : 234,pdate : '2023-02-11'},{title : 'ikigai',author : 'garcia',genre : 'fict',price : 350,pdate : '2022-12-13'},{title : 'lost',author : 'clay',genre : 'mystery',price : 170,pdate : '2023-05-14'},{title : 'sky',author :'hannah',genre : 'sci-fi',price : 275,pdate : '2023-10-11'}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("654723d3b16bb1163ab2ffc6"),
+    '1': ObjectId("654723d3b16bb1163ab2ffc7"),
+    '2': ObjectId("654723d3b16bb1163ab2ffc8"),
+    '3': ObjectId("654723d3b16bb1163ab2ffc9")
+  }
+}
+five> db.book.find()
+[
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc6"),
+    title: 'habits',
+    author: 'clay',
+    genre: 'fict',
+    price: 234,
+    pdate: '2023-02-11'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc7"),
+    title: 'ikigai',
+    author: 'garcia',
+    genre: 'fict',
+    price: 350,
+    pdate: '2022-12-13'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc8"),
+    title: 'lost',
+    author: 'clay',
+    genre: 'mystery',
+    price: 170,
+    pdate: '2023-05-14'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc9"),
+    title: 'sky',
+    author: 'hannah',
+    genre: 'sci-fi',
+    price: 275,
+    pdate: '2023-10-11'
+  }
+]
+
+five> db.book.aggregate([{$group : {_id : null,avgP : {$avg : "$price"}}}])
+[ { _id: null, avgP: 257.25 } ]
+
+five> db.book.aggregate([{$group : {_id : "$genre",count : {$sum : 1}}}])
+[
+  { _id: 'sci-fi', count: 1 },
+  { _id: 'fict', count: 2 },
+  { _id: 'mystery', count: 1 }
+]
+
+five> db.book.aggregate([{$group : {_id : "$genre",mExpBook : {$max : "$price"}}}])
+[
+  { _id: 'fict', mExpBook: 350 },
+  { _id: 'mystery', mExpBook: 170 },
+  { _id: 'sci-fi', mExpBook: 275 }
+]
+
+five> db.book.aggregate([{$group : {_id : "$author",count : {$sum : 1}}},{$sort : {count : -1}},{$limit : 1}])
+[ { _id: 'clay', count: 2 } ]
+
+five> db.book.aggregate([{$sort : {pdate : -1}}])
+[
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc9"),
+    title: 'sky',
+    author: 'hannah',
+    genre: 'sci-fi',
+    price: 275,
+    pdate: '2023-10-11'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc8"),
+    title: 'lost',
+    author: 'clay',
+    genre: 'mystery',
+    price: 170,
+    pdate: '2023-05-14'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc6"),
+    title: 'habits',
+    author: 'clay',
+    genre: 'fict',
+    price: 234,
+    pdate: '2023-02-11'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc7"),
+    title: 'ikigai',
+    author: 'garcia',
+    genre: 'fict',
+    price: 350,
+    pdate: '2022-12-13'
+  }
+]
+
+five> db.book.aggregate([{$sort : {price : 1}}])
+[
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc8"),
+    title: 'lost',
+    author: 'clay',
+    genre: 'mystery',
+    price: 170,
+    pdate: '2023-05-14'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc6"),
+    title: 'habits',
+    author: 'clay',
+    genre: 'fict',
+    price: 234,
+    pdate: '2023-02-11'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc9"),
+    title: 'sky',
+    author: 'hannah',
+    genre: 'sci-fi',
+    price: 275,
+    pdate: '2023-10-11'
+  },
+  {
+    _id: ObjectId("654723d3b16bb1163ab2ffc7"),
+    title: 'ikigai',
+    author: 'garcia',
+    genre: 'fict',
+    price: 350,
+    pdate: '2022-12-13'
+  }
+]
+
+five> db.book.createIndex({title : 1})
+title_1
+five> db.book.getIndexes()
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { title: 1 }, name: 'title_1' }
+]
+
+five> db.book.dropIndex({title : 1})
+{ nIndexesWas: 2, ok: 1 }
+
+five> db.book.getIndexes()
+[ { v: 2, key: { _id: 1 }, name: '_id_' } ]

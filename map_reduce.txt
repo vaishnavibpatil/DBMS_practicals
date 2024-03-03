@@ -1,0 +1,65 @@
+switched to db six
+six> db.retail.insertMany([{cid : 1,cname : 'alice',amt : 500,pname : 'nuts'},{cid : 1,cname : 'alice',amt : 200,pname : 'oil'},{cid : 2,cname : 'bob',amt : 250,pname : 'bornvita'},{cid : 3,cname : 'charlie',amt : 100,pname : 'soap'},{cid : 3,cname : 'charlie',amt : 170,pname : 'rice'}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("65472778b16bb1163ab2ffca"),
+    '1': ObjectId("65472778b16bb1163ab2ffcb"),
+    '2': ObjectId("65472778b16bb1163ab2ffcc"),
+    '3': ObjectId("65472778b16bb1163ab2ffcd"),
+    '4': ObjectId("65472778b16bb1163ab2ffce")
+  }
+}
+six> db.retail.find()
+[
+  {
+    _id: ObjectId("65472778b16bb1163ab2ffca"),
+    cid: 1,
+    cname: 'alice',
+    amt: 500,
+    pname: 'nuts'
+  },
+  {
+    _id: ObjectId("65472778b16bb1163ab2ffcb"),
+    cid: 1,
+    cname: 'alice',
+    amt: 200,
+    pname: 'oil'
+  },
+  {
+    _id: ObjectId("65472778b16bb1163ab2ffcc"),
+    cid: 2,
+    cname: 'bob',
+    amt: 250,
+    pname: 'bornvita'
+  },
+  {
+    _id: ObjectId("65472778b16bb1163ab2ffcd"),
+    cid: 3,
+    cname: 'charlie',
+    amt: 100,
+    pname: 'soap'
+  },
+  {
+    _id: ObjectId("65472778b16bb1163ab2ffce"),
+    cid: 3,
+    cname: 'charlie',
+    amt: 170,
+    pname: 'rice'
+  }
+]
+six> var mapFunction = function(){emit(this.cid,this.amt)}
+
+six> var reduceFunction = function(key,values){return Array.sum(values)}
+
+six> db.retail.mapReduce(mapFunction,reduceFunction,{'out' : 'new_table'})
+DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead.
+See https://docs.mongodb.com/manual/core/map-reduce for details.
+{ result: 'new_table', ok: 1 }
+six> db.new_table.find()
+[
+  { _id: 1, value: 700 },
+  { _id: 3, value: 270 },
+  { _id: 2, value: 250 }
+]
+six>

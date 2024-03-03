@@ -1,0 +1,79 @@
+MariaDB [(none)]> create database three;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> use three;
+Database changed
+
+MariaDB [three]> create table o_rollcall(rollno int,name varchar(10));
+Query OK, 0 rows affected (0.010 sec)
+
+MariaDB [three]> insert into o_rollcall values(1,'tejashri'),(2,'aastha'),(3
+,'ankita'),(4,'vaishnavi');
+Query OK, 4 rows affected (0.005 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [three]> select * from o_rollcall;
++--------+-----------+
+| rollno | name      |
++--------+-----------+
+|      1 | tejashri  |
+|      2 | aastha    |
+|      3 | ankita    |
+|      4 | vaishnavi |
++--------+-----------+
+4 rows in set (0.000 sec)
+
+MariaDB [three]> create table n_rollcall(rollno int,name varchar(10));
+Query OK, 0 rows affected (0.008 sec)
+
+MariaDB [three]> insert into n_rollcall value(2,'aastha');
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [three]> select * from n_rollcall;
++--------+--------+
+| rollno | name   |
++--------+--------+
+|      2 | aastha |
++--------+--------+
+1 row in set (0.000 sec)
+
+MariaDB [three]> delimiter //
+MariaDB [three]> create procedure cur(IN rollno1 int)
+    -> begin
+    -> declare c1 cursor for select rollno from o_rollcall where rollno = rollno1;
+    -> open c1;
+    -> fetch c1 into rollno1;
+    -> if not exists(select * from n_rollcall where rollno = rollno1) then
+    -> insert into n_rollcall
+    -> select * from o_rollcall where rollno = rollno1;
+    -> end if;
+    -> close c1;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.005 sec)
+
+MariaDB [three]> delimiter ;
+MariaDB [three]> call cur(2);
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [three]> call cur(1);
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [three]> call cur(4);
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [three]> call cur(3);
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [three]> select * from n_rollcall;
++--------+-----------+
+| rollno | name      |
++--------+-----------+
+|      2 | aastha    |
+|      1 | tejashri  |
+|      4 | vaishnavi |
+|      3 | ankita    |
++--------+-----------+
+4 rows in set (0.000 sec)
+
+MariaDB [three]>

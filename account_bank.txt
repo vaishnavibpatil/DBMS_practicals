@@ -1,0 +1,204 @@
+
+MariaDB [(none)]> create database one;
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [(none)]> use one;
+Database changed
+
+MariaDB [one]> create table branch(bname varchar(10) primary key,bcity varchar(10),a_amt int check(a_amt >= 0));
+Query OK, 0 rows affected (0.014 sec)
+
+MariaDB [one]> create table customer(cname varchar(10) primary key,cstreet varchar(10),ccity varchar(10));
+Query OK, 0 rows affected (0.010 sec)
+
+MariaDB [one]> create table account(acc_no int primary key,bname varchar(10) not null,balance int check(balance >= 0),foreign key (bname) references branch(bname));
+Query OK, 0 rows affected (0.014 sec)
+
+MariaDB [one]> create table depositor(cname varchar(10),acc_no int,foreign key (cname) references customer(cname),foreign key (acc_no) references account(acc_no));
+Query OK, 0 rows affected (0.012 sec)
+
+MariaDB [one]> create table loan(acc_no int,loan_no int primary key,bname varchar(10),amt int,foreign key (acc_no) references account(acc_no),foreign key (bname) references branch(bname));
+Query OK, 0 rows affected (0.016 sec)
+
+MariaDB [one]> create table borrower(cname varchar(10),loan_no int,foreign key (cname) references customer(cname),foreign key (loan_no) references loan(loan_no));
+Query OK, 0 rows affected (0.012 sec)
+
+MariaDB [one]> insert into branch values('pimpri','pune',500000),('akurdi','pune',400000),('chinchwad','pune',600000);
+Query OK, 3 rows affected (0.004 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [one]> insert into customer values('alice','a nagar','pune'),('bob','b nagar','pune'),('charlie','c nagar','pune');
+Query OK, 3 rows affected (0.003 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [one]> insert into account values(1,'pimpri',10000),(2,'akurdi',15000),(3,'chinchwad',12000);
+Query OK, 3 rows affected (0.003 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [one]> insert into depositor values('alice',1),('bob',2),('charlie',3);
+Query OK, 3 rows affected (0.004 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+
+MariaDB [one]> insert into loan values (1,101,'pimpri',13000),(2,102,'akurdi',14000),(3,103,'chinchwad',11000);
+Query OK, 3 rows affected (0.003 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [one]> insert into borrower values('alice',101),('bob',102),('charlie',103);
+Query OK, 3 rows affected (0.002 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [one]> select * from account;
++--------+-----------+---------+
+| acc_no | bname     | balance |
++--------+-----------+---------+
+|      1 | pimpri    |   10000 |
+|      2 | akurdi    |   15000 |
+|      3 | chinchwad |   12000 |
++--------+-----------+---------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select * from branch;
++-----------+-------+--------+
+| bname     | bcity | a_amt  |
++-----------+-------+--------+
+| akurdi    | pune  | 400000 |
+| chinchwad | pune  | 600000 |
+| pimpri    | pune  | 500000 |
++-----------+-------+--------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select * from customer;
++---------+---------+-------+
+| cname   | cstreet | ccity |
++---------+---------+-------+
+| alice   | a nagar | pune  |
+| bob     | b nagar | pune  |
+| charlie | c nagar | pune  |
++---------+---------+-------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select * from depositor;
++---------+--------+
+| cname   | acc_no |
++---------+--------+
+| alice   |      1 |
+| bob     |      2 |
+| charlie |      3 |
++---------+--------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select * from loan;
++--------+---------+-----------+-------+
+| acc_no | loan_no | bname     | amt   |
++--------+---------+-----------+-------+
+|      1 |     101 | pimpri    | 13000 |
+|      2 |     102 | akurdi    | 14000 |
+|      3 |     103 | chinchwad | 11000 |
++--------+---------+-----------+-------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select * from borrower;
++---------+---------+
+| cname   | loan_no |
++---------+---------+
+| alice   |     101 |
+| bob     |     102 |
+| charlie |     103 |
++---------+---------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select distinct bname from loan;
++-----------+
+| bname     |
++-----------+
+| akurdi    |
+| chinchwad |
+| pimpri    |
++-----------+
+3 rows in set (0.002 sec)
+
+MariaDB [one]> select loan_no from loan where bname = 'pimpri' and amt > 12000;
++---------+
+| loan_no |
++---------+
+|     101 |
++---------+
+1 row in set (0.003 sec)
+
+MariaDB [one]> select c.cname,b.loan_no,l.amt from customer c,borrower b,loan l where c.cname = b.cname and b.loan_no = l.loan_no;
++---------+---------+-------+
+| cname   | loan_no | amt   |
++---------+---------+-------+
+| alice   |     101 | 13000 |
+| bob     |     102 | 14000 |
+| charlie |     103 | 11000 |
++---------+---------+-------+
+3 rows in set (0.002 sec)
+
+MariaDB [one]> select c.cname from customer c,borrower b,loan l where c.cname = b.cname and b.loan_no = l.loan_no and l.bname = 'akurdi' order by c.cname;
++-------+
+| cname |
++-------+
+| bob   |
++-------+
+1 row in set (0.001 sec)
+
+MariaDB [one]> select c.cname from customer where c.cname IN(select cname from depositor) or c.cname IN(select cname from borrower);
+ERROR 1054 (42S22): Unknown column 'c.cname' in 'field list'
+MariaDB [one]> select c.cname from customer c where c.cname IN(select cname from depositor) or c.cname IN(select cname from borrower);
++---------+
+| cname   |
++---------+
+| alice   |
+| bob     |
+| charlie |
++---------+
+3 rows in set (0.002 sec)
+
+MariaDB [one]> select c.cname from customer c where c.cname IN(select cname from depositor) and c.cname IN(select cname from borrower);
++---------+
+| cname   |
++---------+
+| alice   |
+| bob     |
+| charlie |
++---------+
+3 rows in set (0.001 sec)
+
+MariaDB [one]> select bname,avg(balance) from account where bname='pimpri';
++--------+--------------+
+| bname  | avg(balance) |
++--------+--------------+
+| pimpri |   10000.0000 |
++--------+--------------+
+1 row in set (0.002 sec)
+
+MariaDB [one]> select bname,avg(balance) from account group by bname;
++-----------+--------------+
+| bname     | avg(balance) |
++-----------+--------------+
+| akurdi    |   15000.0000 |
+| chinchwad |   12000.0000 |
+| pimpri    |   10000.0000 |
++-----------+--------------+
+3 rows in set (0.000 sec)
+
+MariaDB [one]> select bname,avg(balance) from account group by bname having avg(balance) > 12000 ;
++--------+--------------+
+| bname  | avg(balance) |
++--------+--------------+
+| akurdi |   15000.0000 |
++--------+--------------+
+1 row in set (0.000 sec)
+
+MariaDB [one]> select sum(amt) from loan ;
++----------+
+| sum(amt) |
++----------+
+|    38000 |
++----------+
+1 row in set (0.001 sec)
+
+MariaDB [one]>
+

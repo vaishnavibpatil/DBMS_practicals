@@ -1,0 +1,363 @@
+test> use four;
+switched to db four
+four> db.teachers.insertMany([{tname : 'alice',dno : 1,dname : 'cs',exp : 4,sal : 10000,doj : '2023-01-02'},{tname : 'charlie',dno : 2,dname : 'it',exp : 5,sal : 12000,doj : '2022-08-11'},{tname : 'bob',dno : 2,dname : 'it',exp : 4,sal : 13000,doj : '2022-01-13'},{tname : 'pravin',dno : 3,dname : 'entc',exp : 3,sal : 9000,doj : '2023-01-29'},{tname : 'clay',dno : 4,dname : 'civil',exp : 2,sal : 6000,doj : '2023-04-03'}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("65471e78b16bb1163ab2ffbe"),
+    '1': ObjectId("65471e78b16bb1163ab2ffbf"),
+    '2': ObjectId("65471e78b16bb1163ab2ffc0"),
+    '3': ObjectId("65471e78b16bb1163ab2ffc1"),
+    '4': ObjectId("65471e78b16bb1163ab2ffc2")
+  }
+}
+four> db.teachers.find()
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    dno: 2,
+    dname: 'it',
+    exp: 5,
+    sal: 12000,
+    doj: '2022-08-11'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc0"),
+    tname: 'bob',
+    dno: 2,
+    dname: 'it',
+    exp: 4,
+    sal: 13000,
+    doj: '2022-01-13'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc1"),
+    tname: 'pravin',
+    dno: 3,
+    dname: 'entc',
+    exp: 3,
+    sal: 9000,
+    doj: '2023-01-29'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc2"),
+    tname: 'clay',
+    dno: 4,
+    dname: 'civil',
+    exp: 2,
+    sal: 6000,
+    doj: '2023-04-03'
+  }
+]
+four> db.student.insertMany([{sname : 'abc',rollno : 1,class : 'a'},{sname : 'pqr',rollno : 2,class : 'c'},{sname : 'xyz',rollno : 3,class : 'b'}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("65471ee4b16bb1163ab2ffc3"),
+    '1': ObjectId("65471ee4b16bb1163ab2ffc4"),
+    '2': ObjectId("65471ee4b16bb1163ab2ffc5")
+  }
+}
+four> db.student.find()
+[
+  {
+    _id: ObjectId("65471ee4b16bb1163ab2ffc3"),
+    sname: 'abc',
+    rollno: 1,
+    class: 'a'
+  },
+  {
+    _id: ObjectId("65471ee4b16bb1163ab2ffc4"),
+    sname: 'pqr',
+    rollno: 2,
+    class: 'c'
+  },
+  {
+    _id: ObjectId("65471ee4b16bb1163ab2ffc5"),
+    sname: 'xyz',
+    rollno: 3,
+    class: 'b'
+  }
+]
+four> db.teachers.find().sort({tname : 1})
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc0"),
+    tname: 'bob',
+    dno: 2,
+    dname: 'it',
+    exp: 4,
+    sal: 13000,
+    doj: '2022-01-13'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    dno: 2,
+    dname: 'it',
+    exp: 5,
+    sal: 12000,
+    doj: '2022-08-11'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc2"),
+    tname: 'clay',
+    dno: 4,
+    dname: 'civil',
+    exp: 2,
+    sal: 6000,
+    doj: '2023-04-03'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc1"),
+    tname: 'pravin',
+    dno: 3,
+    dname: 'entc',
+    exp: 3,
+    sal: 9000,
+    doj: '2023-01-29'
+  }
+]
+four> db.teachers.find({dname : 'cs'})
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  }
+]
+four> db.teachers.find({dname : {$in : ['cs','it','entc']}})
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    dno: 2,
+    dname: 'it',
+    exp: 5,
+    sal: 12000,
+    doj: '2022-08-11'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc0"),
+    tname: 'bob',
+    dno: 2,
+    dname: 'it',
+    exp: 4,
+    sal: 13000,
+    doj: '2022-01-13'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc1"),
+    tname: 'pravin',
+    dno: 3,
+    dname: 'entc',
+    exp: 3,
+    sal: 9000,
+    doj: '2023-01-29'
+  }
+]
+four> db.teachers.find({dname : {$in : ['cs','it','entc']},sal : {$gte : 10000}})
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    dno: 2,
+    dname: 'it',
+    exp: 5,
+    sal: 12000,
+    doj: '2022-08-11'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc0"),
+    tname: 'bob',
+    dno: 2,
+    dname: 'it',
+    exp: 4,
+    sal: 13000,
+    doj: '2022-01-13'
+  }
+]
+four> db.student.find({$or : [{rollno : 2},{sname : 'xyz'}]})
+[
+  {
+    _id: ObjectId("65471ee4b16bb1163ab2ffc4"),
+    sname: 'pqr',
+    rollno: 2,
+    class: 'c'
+  },
+  {
+    _id: ObjectId("65471ee4b16bb1163ab2ffc5"),
+    sname: 'xyz',
+    rollno: 3,
+    class: 'b'
+  }
+]
+four> db.teachers.update({tname : 'pravin'},{$set : {exp : 10}},{upsert : true})
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+four> db.teachers.find({tname : 'pravin'})
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc1"),
+    tname: 'pravin',
+    dno: 3,
+    dname: 'entc',
+    exp: 10,
+    sal: 9000,
+    doj: '2023-01-29'
+  }
+]
+four> db.teachers.update({dname : 'it'},{$set : {dname : 'cs'}},{multi : true})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+four> db.teachers.find()
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    dno: 2,
+    dname: 'cs',
+    exp: 5,
+    sal: 12000,
+    doj: '2022-08-11'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc0"),
+    tname: 'bob',
+    dno: 2,
+    dname: 'cs',
+    exp: 4,
+    sal: 13000,
+    doj: '2022-01-13'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc1"),
+    tname: 'pravin',
+    dno: 3,
+    dname: 'entc',
+    exp: 10,
+    sal: 9000,
+    doj: '2023-01-29'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc2"),
+    tname: 'clay',
+    dno: 4,
+    dname: 'civil',
+    exp: 2,
+    sal: 6000,
+    doj: '2023-04-03'
+  }
+]
+four> db.teachers.find({},{tname : 1,exp :1})
+[
+  { _id: ObjectId("65471e78b16bb1163ab2ffbe"), tname: 'alice', exp: 4 },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    exp: 5
+  },
+  { _id: ObjectId("65471e78b16bb1163ab2ffc0"), tname: 'bob', exp: 4 },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc1"),
+    tname: 'pravin',
+    exp: 10
+  },
+  { _id: ObjectId("65471e78b16bb1163ab2ffc2"), tname: 'clay', exp: 2 }
+]
+four> db.teachers.remove({dname : 'it'})
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 0 }
+four> db.teachers.find().sort({tname : 1}).limit(3).pretty()
+[
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbe"),
+    tname: 'alice',
+    dno: 1,
+    dname: 'cs',
+    exp: 4,
+    sal: 10000,
+    doj: '2023-01-02'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffc0"),
+    tname: 'bob',
+    dno: 2,
+    dname: 'cs',
+    exp: 4,
+    sal: 13000,
+    doj: '2022-01-13'
+  },
+  {
+    _id: ObjectId("65471e78b16bb1163ab2ffbf"),
+    tname: 'charlie',
+    dno: 2,
+    dname: 'cs',
+    exp: 5,
+    sal: 12000,
+    doj: '2022-08-11'
+  }
+]
+four>
+

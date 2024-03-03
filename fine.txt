@@ -1,0 +1,82 @@
+MariaDB [book]> create database seven;
+    -> //
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [book]> delimiter ;
+MariaDB [book]> use seven;
+Database changed
+MariaDB [seven]> create table borrower(rollno int,name varchar(10),doi date,nbook varchar(10),status char);
+Query OK, 0 rows affected (0.017 sec)
+
+MariaDB [seven]> create table fine(rollno int,Date date,amt int);
+Query OK, 0 rows affected (0.012 sec)
+
+MariaDB [seven]> insert into borrower values
+    -> (1,'tejashri','2023-10-16','dbms','i'),
+    -> (2,'vaishnavi','2023-09-29','os','i');
+Query OK, 2 rows affected (0.003 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [seven]> select * from borrower;
++--------+-----------+------------+-------+--------+
+| rollno | name      | doi        | nbook | status |
++--------+-----------+------------+-------+--------+
+|      1 | tejashri  | 2023-10-16 | dbms  | i      |
+|      2 | vaishnavi | 2023-09-29 | os    | i      |
++--------+-----------+------------+-------+--------+
+2 rows in set (0.000 sec)
+
+
+
+MariaDB [seven]> delimiter //
+MariaDB [seven]> create procedure p1(IN rollno1 int,nbook1 varchar(10))
+    -> begin
+    -> declare date_issue date;
+    -> declare s char;
+    -> declare days int;
+    -> declare fine int;
+    -> declare exit handler for SQLEXCEPTION select 'record not fount';
+    -> select doi into date_issue from borrower where rollno = rollno1 and nbook = nbook1;
+    -> set days = DATEDIFF(CURDATE(),date_issue);
+    -> if(days >= 15 and days <= 30 ) then
+    -> set fine = days * 5;
+    -> elseif( days > 30 ) then
+    -> set fine = days * 50 ;
+    -> end if;
+    -> update borrower set status = 'r' where rollno = rollno1 and nbook = nbook1;
+    -> if( fine IS NOT NULL) then
+    -> insert into fine values(rollno1,CURDATE(),fine);
+    -> end if;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.006 sec)
+
+MariaDB [seven]> call p1(1,'dbms') //
+Query OK, 3 rows affected (0.018 sec)
+
+MariaDB [seven]> call p1(2,'os') //
+Query OK, 3 rows affected (0.005 sec)
+
+MariaDB [seven]> select * from fine;
+    -> //
++--------+------------+------+
+| rollno | Date       | amt  |
++--------+------------+------+
+|      1 | 2023-11-07 |  110 |
+|      2 | 2023-11-07 | 1950 |
++--------+------------+------+
+2 rows in set (0.000 sec)
+
+MariaDB [seven]> call p1(3,'os') //
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [seven]> select * from fine //
++--------+------------+------+
+| rollno | Date       | amt  |
++--------+------------+------+
+|      1 | 2023-11-07 |  110 |
+|      2 | 2023-11-07 | 1950 |
++--------+------------+------+
+2 rows in set (0.000 sec)
+
+
